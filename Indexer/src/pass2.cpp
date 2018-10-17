@@ -17,19 +17,13 @@ void readToBuffer(vector<ifstream *> tempFileHandles, vector<BufferNode> &buffer
 			postingFile << record.data1 << " " << record.data2 << endl; // write posting
 			currentPostIndex++;
 			if((*(tempFileHandles.at(i))).peek() != EOF) {
-
 				(*(tempFileHandles.at(i))) >> record.key >> record.data1 >> record.data2;
-				//cout << "I'm in " << record.key << " " << record.data1 << " " << record.data2 << " " << endl;
-				//cout << "I'm in " << buffer.at(i).record.key << " " << buffer.at(i).record.data1 << " " << buffer.at(i).record.data2 << " " << endl;
 				while(record.key == key && ((*(tempFileHandles.at(i))).peek() != EOF)) {
 					postingFile << record.data1 << " " << record.data2 << endl; // write posting
 					currentPostIndex++;
 					(*(tempFileHandles.at(i))) >> record.key >> record.data1 >> record.data2;
-					//cout << "reading buffer index: " << i << " " << "No eof: " << ((*(tempFileHandles.at(i))).peek() != EOF) << endl;
-					//cout << "posting: " << record.key <<" "<< record.data1 << " " << record.data2<<endl;
 				}
-			} else {
-				//cout << "end of file\n";
+			} else {//end of file
 				buffer.erase(buffer.begin() + i);
 			}
 		}
@@ -66,25 +60,19 @@ int main(int argc, char **argv) {
 		
 		for(int i = 0; i < tempFileHandles.size(); i++) { //read first line into buffer
 			StringIntPair record;
-			//if(*(tempFileHandles.at(i)) ) { //if read successful
-				*(tempFileHandles.at(i)) >> record.key >> record.data1 >> record.data2; //key, doc id, freq
-				buffer.push_back(BufferNode(record, i));
-			//} //else end of file, do not push to vector
+			*(tempFileHandles.at(i)) >> record.key >> record.data1 >> record.data2; //key, doc id, freq
+			buffer.push_back(BufferNode(record, i));
 		}
 		
 		int currentPostIndex = 0;
 		ofstream postingFile("./posting.out");
 		while(!buffer.empty()) {//buffer not empty
 			int lowestIndex = alphabetFirstTokenIndex(buffer);
-			//cout << "low index: " << lowestIndex << " process " << buffer.at(lowestIndex).record.key << endl;
 			StringIntPair* globalRecord = globalHT.GetData(buffer.at(lowestIndex).record.key);
 			if(globalRecord != NULL) {
-				//cout << "record before: " << globalRecord->data2 << endl;
 				globalRecord->data2 = currentPostIndex; //start position
-				//cout << "record after: " << globalRecord->data2 << endl << "process "<< globalRecord->key << endl;
 				readToBuffer(tempFileHandles, buffer, lowestIndex, globalRecord->key, currentPostIndex, postingFile);
 			}
-			//cout << "Size of buffer: " << buffer.size() << endl;
 		}
 		postingFile.close();
 		for(int i = 0; i < tempFileHandles.size(); i++) {

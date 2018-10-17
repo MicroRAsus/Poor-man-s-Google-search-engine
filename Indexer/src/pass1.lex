@@ -111,17 +111,6 @@ int main(int argc, char **argv) {
 				if(currentDoc % mergeNumber == 0) { //if match merge number, write temp file
 					printPass1TempFile(records, mergeNumber);
 				}
-				//after parsing all token in single doc, we get token+docid+freq, we make a function in hashtable to get non empty entries, 
-				//insert them into vector of stringintpair
-				//after looping, files count equal to # specified by arg2, we do sort by key, after that, we have sorted tokens of files, loop vector to print out the pass one file
-				
-				//after every yylex(), get non empty entries, insert into global ht, if key = "", set key = key and data1(numdoc) = 1
-				//else key is in table, data1++
-				//after all file process, print global ht(keep blank)
-				
-				//in pass 2, unmarshall the gloabal ht and load in to ht, load tokens, docid, freq into buffer using >>, get alphabetic first token in buffer
-				//look up in till new token,
-				//update the posting
 			}
 		}
 		int remainder = currentDoc % mergeNumber;
@@ -129,7 +118,6 @@ int main(int argc, char **argv) {
 			printPass1TempFile(records, remainder); // print remainder temp file
 		}
 		//write global ht
-		
 		globalHT.Print("./tempDictFile.out");
 		
 		fclose(mapfile);
